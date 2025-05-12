@@ -51,4 +51,11 @@ public static class Shartilities
         Log(LogType.ERROR, $"UNREACHABLE: {msg}\n");
         Environment.Exit(1);
     }
+
+    public static List<string> SplitAndRemoveWhite(string src)
+    {
+        List<string> words = [.. src.Split(' ')];
+        words.RemoveAll(x => string.IsNullOrWhiteSpace(x) || string.IsNullOrEmpty(x));
+        return words;
+    }
 }
