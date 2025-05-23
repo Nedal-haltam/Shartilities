@@ -1,6 +1,9 @@
 ﻿//namespace Shartilities
 //{
 //}
+using System.Diagnostics.CodeAnalysis;
+using System.Xml.Serialization;
+
 public static class Shartilities
 {
     public enum LogType
@@ -58,4 +61,38 @@ public static class Shartilities
         words.RemoveAll(x => string.IsNullOrWhiteSpace(x) || string.IsNullOrEmpty(x));
         return words;
     }
+    [RequiresUnreferencedCode("Calls System.Xml.Serialization.XmlSerializer.XmlSerializer(Type)")]
+    public static void SaveObject<T>(string filePath, T objectToWrite, bool append = false) where T : new()
+    {
+        TextWriter? writer = null;
+        try
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            writer = new StreamWriter(filePath, append);
+            serializer.Serialize(writer, objectToWrite);
+        }
+        finally
+        {
+            writer?.Close();
+        }
+    }
+    [RequiresUnreferencedCode("Calls System.Xml.Serialization.XmlSerializer.XmlSerializer(Type)")]
+    public static T LoadOject<T>(string filePath) where T : new()
+    {
+        TextReader? reader = null;
+        try
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            reader = new StreamReader(filePath);
+            object? o = serializer.Deserialize(reader);
+            if (o == null)
+                return new();
+            return (T)o;
+        }
+        finally
+        {
+            reader?.Close();
+        }
+    }
+
 }
