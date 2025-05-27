@@ -38,23 +38,22 @@ public static class Shartilities
         Console.Write(head + msg);
         Console.ForegroundColor = before;
     }
-    public static string ShifArgs(ref string[] args, string msg)
+    public static bool ShiftArgs(ref string[] args, out string? arg)
     {
         if (args.Length <= 0)
         {
-            Log(LogType.ERROR, msg);
-            Environment.Exit(1);
+            arg = null;
+            return false;
         }
-        string arg = args[0];
+        arg = args[0];
         args = args[1..];
-        return arg;
+        return true;
     }
     public static void UNREACHABLE(string msg)
     {
         Log(LogType.ERROR, $"UNREACHABLE: {msg}\n");
         Environment.Exit(1);
     }
-
     public static List<string> SplitAndRemoveWhite(string src)
     {
         List<string> words = [.. src.Split(' ')];
@@ -94,5 +93,4 @@ public static class Shartilities
             reader?.Close();
         }
     }
-
 }
