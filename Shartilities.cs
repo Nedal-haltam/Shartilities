@@ -2,6 +2,7 @@
 //{
 //}
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
 public static class Shartilities
@@ -53,6 +54,15 @@ public static class Shartilities
     {
         Log(LogType.ERROR, $"UNREACHABLE: {msg}\n");
         Environment.Exit(1);
+    }
+    public static int Assert(bool Condition, string msg)
+    {
+        if (!Condition)
+        {
+            Log(LogType.ERROR, $"Assert: {msg}\n");
+            Environment.Exit(1);
+        }
+        return 0;
     }
     public static List<string> SplitAndRemoveWhite(string src)
     {
