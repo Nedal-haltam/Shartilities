@@ -39,11 +39,11 @@ public static class Shartilities
         Console.Write(head + msg);
         Console.ForegroundColor = before;
     }
-    public static bool ShiftArgs(ref string[] args, out string? arg)
+    public static bool ShiftArgs(ref string[] args, out string arg)
     {
         if (args.Length <= 0)
         {
-            arg = null;
+            arg = "";
             return false;
         }
         arg = args[0];
