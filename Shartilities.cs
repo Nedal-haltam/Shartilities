@@ -55,6 +55,11 @@ public static class Shartilities
         Log(LogType.ERROR, $"UNREACHABLE: {msg}\n");
         Environment.Exit(1);
     }
+    public static void TODO(string msg)
+    {
+        Log(LogType.ERROR, $"TODO: {msg}\n");
+        Environment.Exit(1);
+    }
     public static int Assert(bool Condition, string msg)
     {
         if (!Condition)
