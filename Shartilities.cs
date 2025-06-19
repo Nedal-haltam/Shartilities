@@ -11,7 +11,7 @@ public static class Shartilities
     {
         INFO, WARNING, ERROR, NORMAL
     }
-    public static void Log(LogType type, string msg)
+    public static void Log(LogType type, string msg, int? ExitCode = null)
     {
         ConsoleColor before = Console.ForegroundColor;
         string head;
@@ -38,6 +38,8 @@ public static class Shartilities
         }
         Console.Write(head + msg);
         Console.ForegroundColor = before;
+        if (ExitCode.HasValue)
+            Environment.Exit(ExitCode.Value);
     }
     public static bool ShiftArgs(ref string[] args, out string arg)
     {
