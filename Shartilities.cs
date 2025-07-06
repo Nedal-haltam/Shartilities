@@ -10,35 +10,28 @@ public static class Shartilities
 {
     public enum LogType
     {
-        INFO, WARNING, ERROR, NORMAL
+        INFO, WARNING, ERROR
     }
     public static void Log(LogType type, string msg, int? ExitCode = null)
     {
-        ConsoleColor before = Console.ForegroundColor;
-        string head;
         switch (type)
         {
             case LogType.INFO:
                 Console.ForegroundColor = ConsoleColor.Green;
-                head = "INFO: ";
+                Console.WriteLine($"\x1b[32mINFO: {msg}\x1b[0m");
                 break;
             case LogType.WARNING:
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                head = "WARNING: ";
+                Console.Write($"\x1b[33mWARNING: {msg}\x1b[0m");
                 break;
             case LogType.ERROR:
                 Console.ForegroundColor = ConsoleColor.Red;
-                head = "ERROR: ";
-                break;
-            case LogType.NORMAL:
-                head = "";
+                Console.Write($"\x1b[31mERROR: {msg}\x1b[0m");
                 break;
             default:
-                UNREACHABLE("Log");
+                UNREACHABLE("invalid log type provided");
                 return;
         }
-        Console.Write(head + msg);
-        Console.ForegroundColor = before;
         if (ExitCode.HasValue)
             Environment.Exit(ExitCode.Value);
     }
