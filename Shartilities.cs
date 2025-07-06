@@ -1,6 +1,7 @@
 ﻿//namespace Shartilities
 //{
 //}
+using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
@@ -41,6 +42,10 @@ public static class Shartilities
         if (ExitCode.HasValue)
             Environment.Exit(ExitCode.Value);
     }
+    public static void Logln(LogType type, string msg, int? ExitCode)
+    {
+        Log(type, msg + '\n', ExitCode);
+    }
     public static bool ShiftArgs(ref string[] args, out string arg)
     {
         if (args.Length <= 0)
@@ -62,7 +67,7 @@ public static class Shartilities
         Log(LogType.ERROR, $"TODO: {msg}\n");
         Environment.Exit(1);
     }
-    public static int Assert(bool Condition, string msg)
+    public static int Assert(bool Condition, string msg = "false")
     {
         if (!Condition)
         {
