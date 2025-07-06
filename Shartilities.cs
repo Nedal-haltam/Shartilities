@@ -18,7 +18,7 @@ public static class Shartilities
         {
             case LogType.INFO:
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\x1b[32mINFO: {msg}\x1b[0m");
+                Console.Write($"\x1b[32mINFO: {msg}\x1b[0m");
                 break;
             case LogType.WARNING:
                 Console.ForegroundColor = ConsoleColor.Yellow;
