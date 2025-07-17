@@ -69,6 +69,7 @@ public static class Shartilities
         }
         return 0;
     }
+    public static dynamic UNUSED(dynamic foo) => foo;
     public static List<string> SplitAndRemoveWhite(string src)
     {
         List<string> words = [.. src.Split(' ')];
