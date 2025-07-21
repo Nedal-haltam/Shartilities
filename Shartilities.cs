@@ -50,6 +50,12 @@ public static class Shartilities
         args = args[1..];
         return true;
     }
+    public static string ReadFile(string FilePath)
+    {
+        if (!File.Exists(FilePath))
+            Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
+        return File.ReadAllText(FilePath);
+    }
     public static void UNREACHABLE(string msg)
     {
         Log(LogType.ERROR, $"UNREACHABLE: {msg}\n");
