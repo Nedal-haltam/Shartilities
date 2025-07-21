@@ -35,7 +35,7 @@ public static class Shartilities
         if (ExitCode.HasValue)
             Environment.Exit(ExitCode.Value);
     }
-    public static void Logln(LogType type, string msg, int? ExitCode)
+    public static void Logln(LogType type, string msg, int? ExitCode = null)
     {
         Log(type, msg + '\n', ExitCode);
     }
