@@ -50,12 +50,6 @@ public static class Shartilities
         args = args[1..];
         return true;
     }
-    public static string ReadFile(string FilePath)
-    {
-        if (!File.Exists(FilePath))
-            Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
-        return File.ReadAllText(FilePath);
-    }
     public static void UNREACHABLE(string msg)
     {
         Log(LogType.ERROR, $"UNREACHABLE: {msg}\n");
@@ -76,6 +70,16 @@ public static class Shartilities
         return 0;
     }
     public static dynamic UNUSED(dynamic foo) => foo;
+    public static string ReadFile(string FilePath)
+    {
+        if (!File.Exists(FilePath))
+            Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
+        return File.ReadAllText(FilePath);
+    }
+    public static void WriteFile(string content, string FilePath)
+    {
+        File.WriteAllText(FilePath, content);
+    }
     public static List<string> SplitAndRemoveWhite(string src)
     {
         List<string> words = [.. src.Split(' ')];
