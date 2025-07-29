@@ -68,6 +68,38 @@ public static class Shartilities
             var result = CommandTask.GetAwaiter().GetResult();
             return result.IsSuccess;
         }
+        public void RunAsync()
+        {
+            if (!this.IsValid)
+            {
+                Logln(LogType.ERROR, $"no command was provided to run (empty command)");
+            }
+
+            var command = CliWrap.Cli
+                .Wrap(this.Head())
+                .WithArguments(this.Args())
+                .WithValidation(CliWrap.CommandResultValidation.None);
+            var commandTask = command.ExecuteBufferedAsync();
+
+            var listeningTask = Task.Run(async () =>
+            {
+                await foreach (var commandEvent in command.ListenAsync())
+                {
+                    switch (commandEvent)
+                    {
+                        case StandardOutputCommandEvent stdout:
+                            Console.WriteLine(stdout.Text);
+                            break;
+                        case StandardErrorCommandEvent stderr:
+                            Console.Error.WriteLine(stderr.Text);
+                            break;
+                    }
+                }
+            });
+            //var result = await commandTask;
+            //await listeningTask;
+            //return result.IsSuccess;
+        }
     }
     public static void Log(LogType type, string msg, int? ExitCode = null)
     {
