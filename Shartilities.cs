@@ -1,9 +1,12 @@
 ﻿//namespace Shartilities
 //{
 //}
+using CliWrap.Buffered;
+using CliWrap.EventStream;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml.Serialization;
 
 public static class Shartilities
@@ -11,6 +14,60 @@ public static class Shartilities
     public enum LogType
     {
         INFO, WARNING, ERROR
+    }
+    public struct Command
+    {
+        private string[] m_cmd;
+        public Command()
+        {
+            m_cmd = [];
+        }
+        public Command(string[] cmd)
+        {
+            m_cmd = [.. cmd];
+        }
+        public bool IsValid => m_cmd.Length > 0;
+        public void Append(string arg)
+        {
+            m_cmd.Append(arg);
+        }
+        public string Head() => m_cmd[0];
+        public string Args()
+        {
+            StringBuilder ret = new();
+            ret.AppendJoin(' ', m_cmd[1..]);
+            return ret.ToString();
+        }
+        public string Cmd() => Head() + " " + Args();
+        public void Reset() => m_cmd = [];
+        public async Task<bool> RunSync()
+        {
+            if (!this.IsValid)
+            {
+                Logln(LogType.ERROR, $"no command was provided to run (empty command)");
+                return false;
+            }
+            var Command = CliWrap.Cli
+              .Wrap(this.Head())
+              .WithArguments(this.Args())
+              .WithValidation(CliWrap.CommandResultValidation.None);
+            var CommandTask = Command.ExecuteBufferedAsync();
+
+            await foreach (var CommandEvent in Command.ListenAsync())
+            {
+                switch (CommandEvent)
+                {
+                    case StandardOutputCommandEvent StdOut:
+                        Console.WriteLine(StdOut.Text);
+                        break;
+                    case StandardErrorCommandEvent StdErr:
+                        Console.Error.WriteLine(StdErr.Text);
+                        break;
+                }
+            }
+            var result = CommandTask.GetAwaiter().GetResult();
+            return result.IsSuccess;
+        }
     }
     public static void Log(LogType type, string msg, int? ExitCode = null)
     {
