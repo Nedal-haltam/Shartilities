@@ -165,9 +165,17 @@ public static class Shartilities
             Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
         return File.ReadAllText(FilePath);
     }
-    public static void WriteFile(string content, string FilePath)
+    public static void WriteFile(string FilePath, string contents)
     {
-        File.WriteAllText(FilePath, content);
+        string? DirPath = Path.GetDirectoryName(FilePath);
+        if (DirPath == null)
+        {
+            Shartilities.Logln(Shartilities.LogType.ERROR, $"invalid path: {FilePath}", 1);
+            return;
+        }
+        if (!Directory.Exists(DirPath))
+            Directory.CreateDirectory(DirPath);
+        File.WriteAllText(FilePath, contents);
     }
     public static List<string> SplitAndRemoveWhite(string src)
     {
