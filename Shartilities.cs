@@ -3,6 +3,7 @@
 //}
 using CliWrap.Buffered;
 using CliWrap.EventStream;
+using Microsoft.VisualBasic;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -159,23 +160,48 @@ public static class Shartilities
         return 0;
     }
     public static dynamic UNUSED(dynamic foo) => foo;
-    public static string ReadFile(string FilePath)
+    public static string ReadFile(string FilePath, int? ExitCode = null)
     {
         if (!File.Exists(FilePath))
             Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
-        return File.ReadAllText(FilePath);
+        string ret = "";
+        try
+        {
+            ret = File.ReadAllText(FilePath);
+        }
+        catch
+        {
+            Shartilities.Logln(LogType.ERROR, $"could not write to file {FilePath}");
+            if (ExitCode.HasValue)
+                Environment.Exit(ExitCode.Value);
+            return "";
+        }
+        Shartilities.Logln(LogType.INFO, $"file {FilePath} was read successfully");
+        return ret;
     }
-    public static void WriteFile(string FilePath, string contents)
+    public static bool WriteFile(string FilePath, string contents, int? ExitCode = null)
     {
         string? DirPath = Path.GetDirectoryName(FilePath);
         if (DirPath == null)
         {
             Shartilities.Logln(Shartilities.LogType.ERROR, $"invalid path: {FilePath}", 1);
-            return;
+            return false;
         }
         if (!Directory.Exists(DirPath))
             Directory.CreateDirectory(DirPath);
-        File.WriteAllText(FilePath, contents);
+        try
+        {
+            File.WriteAllText(FilePath, contents);
+        }
+        catch
+        {
+            Shartilities.Logln(LogType.ERROR, $"could not write to file {FilePath}");
+            if (ExitCode.HasValue)
+                Environment.Exit(ExitCode.Value);
+            return false;
+        }
+        Shartilities.Logln(LogType.INFO, $"file {FilePath} was written successfully");
+        return true;
     }
     public static List<string> SplitAndRemoveWhite(string src)
     {
