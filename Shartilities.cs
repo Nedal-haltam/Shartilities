@@ -30,7 +30,7 @@ public static class Shartilities
         public bool IsValid => m_cmd.Length > 0;
         public void Append(string arg)
         {
-            m_cmd.Append(arg);
+            m_cmd = (string[])m_cmd.Append(arg);
         }
         public string Head() => m_cmd[0];
         public string Args()
