@@ -27,21 +27,21 @@ public static class Shartilities
         {
             m_cmd = [.. cmd];
         }
-        public bool IsValid => m_cmd.Length > 0;
+        public readonly bool IsValid => m_cmd.Length > 0;
         public void Append(string arg)
         {
             m_cmd = (string[])m_cmd.Append(arg);
         }
-        public string Head() => m_cmd[0];
-        public string Args()
+        public readonly string Head() => m_cmd[0];
+        public readonly string Args()
         {
             StringBuilder ret = new();
             ret.AppendJoin(' ', m_cmd[1..]);
             return ret.ToString();
         }
-        public string Cmd() => Head() + " " + Args();
+        public readonly string Cmd() => Head() + " " + Args();
         public void Reset() => m_cmd = [];
-        public async Task<bool> RunSync()
+        public async readonly Task<bool> RunSync()
         {
             if (!this.IsValid)
             {
@@ -69,7 +69,7 @@ public static class Shartilities
             var result = CommandTask.GetAwaiter().GetResult();
             return result.IsSuccess;
         }
-        public void RunAsync()
+        public readonly void RunAsync()
         {
             if (!this.IsValid)
             {
@@ -164,7 +164,7 @@ public static class Shartilities
     {
         if (!File.Exists(FilePath))
             Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
-        string ret = "";
+        string ret;
         try
         {
             ret = File.ReadAllText(FilePath);
