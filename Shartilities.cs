@@ -102,25 +102,32 @@ public static class Shartilities
             //return result.IsSuccess;
         }
     }
-    public static void Log(LogType type, string msg, int? ExitCode = null)
+    public static void Log(LogType? type, string msg, int? ExitCode = null)
     {
-        switch (type)
+        if (!type.HasValue)
         {
-            case LogType.INFO:
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write($"\x1b[32mINFO: {msg}\x1b[0m");
-                break;
-            case LogType.WARNING:
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write($"\x1b[33mWARNING: {msg}\x1b[0m");
-                break;
-            case LogType.ERROR:
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write($"\x1b[31mERROR: {msg}\x1b[0m");
-                break;
-            default:
-                UNREACHABLE("invalid log type provided");
-                return;
+            Console.Write($"LOG: {msg}");
+        }
+        else
+        {
+            switch (type)
+            {
+                case LogType.INFO:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write($"\x1b[32mINFO: {msg}\x1b[0m");
+                    break;
+                case LogType.WARNING:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"\x1b[33mWARNING: {msg}\x1b[0m");
+                    break;
+                case LogType.ERROR:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write($"\x1b[31mERROR: {msg}\x1b[0m");
+                    break;
+                default:
+                    UNREACHABLE("invalid log type provided");
+                    return;
+            }
         }
         if (ExitCode.HasValue)
             Environment.Exit(ExitCode.Value);
