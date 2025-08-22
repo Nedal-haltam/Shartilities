@@ -167,7 +167,7 @@ public static class Shartilities
         return 0;
     }
     public static dynamic UNUSED(dynamic foo) => foo;
-    public static string ReadFile(string FilePath, int? ExitCode = null)
+    public static string ReadFile(string FilePath, int? ExitCode = null, bool LOG = false)
     {
         if (!File.Exists(FilePath))
             Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
@@ -183,7 +183,8 @@ public static class Shartilities
                 Environment.Exit(ExitCode.Value);
             return "";
         }
-        Shartilities.Logln(LogType.INFO, $"file {FilePath} was read successfully");
+        if (LOG)
+            Shartilities.Logln(LogType.INFO, $"file {FilePath} was read successfully");
         return ret;
     }
     public static bool WriteFile(string FilePath, string contents, int? ExitCode = null)
