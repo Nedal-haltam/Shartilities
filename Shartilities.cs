@@ -37,19 +37,17 @@ public static class Shartilities
         public readonly string Args => new StringBuilder().AppendJoin(' ', m_cmd[1..]).ToString();
         public readonly string Cmd() => Head + " " + Args;
         public void Reset() => m_cmd = [];
-        public readonly bool RunSync(ref Process process)
+        public readonly bool RunSync(ref Process? process)
         {
             var psi = new ProcessStartInfo
             {
                 FileName = this.Head,
                 Arguments = this.Args,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false
             };
-            Process? p = Process.Start(psi);
-            if (p == null)
-                return false;
-            process = p;
+            process = Process.Start(psi);
             process!.WaitForExit();
             return process.ExitCode == 0;
         }
