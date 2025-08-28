@@ -5,6 +5,7 @@ using CliWrap.Buffered;
 using CliWrap.EventStream;
 using Microsoft.VisualBasic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -32,42 +33,25 @@ public static class Shartilities
         {
             m_cmd = (string[])m_cmd.Append(arg);
         }
-        public readonly string Head() => m_cmd[0];
-        public readonly string Args()
-        {
-            StringBuilder ret = new();
-            ret.AppendJoin(' ', m_cmd[1..]);
-            return ret.ToString();
-        }
-        public readonly string Cmd() => Head() + " " + Args();
+        public readonly string Head => m_cmd[0];
+        public readonly string Args => new StringBuilder().AppendJoin(' ', m_cmd[1..]).ToString();
+        public readonly string Cmd() => Head + " " + Args;
         public void Reset() => m_cmd = [];
-        public async readonly Task<bool> RunSync()
+        public readonly bool RunSync(ref Process process)
         {
-            if (!this.IsValid)
+            var psi = new ProcessStartInfo
             {
-                Logln(LogType.ERROR, $"no command was provided to run (empty command)");
+                FileName = this.Head,
+                Arguments = this.Args,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+            Process? p = Process.Start(psi);
+            if (p == null)
                 return false;
-            }
-            var Command = CliWrap.Cli
-              .Wrap(this.Head())
-              .WithArguments(this.Args())
-              .WithValidation(CliWrap.CommandResultValidation.None);
-            var CommandTask = Command.ExecuteBufferedAsync();
-
-            await foreach (var CommandEvent in Command.ListenAsync())
-            {
-                switch (CommandEvent)
-                {
-                    case StandardOutputCommandEvent StdOut:
-                        Console.WriteLine(StdOut.Text);
-                        break;
-                    case StandardErrorCommandEvent StdErr:
-                        Console.Error.WriteLine(StdErr.Text);
-                        break;
-                }
-            }
-            var result = CommandTask.GetAwaiter().GetResult();
-            return result.IsSuccess;
+            process = p;
+            process!.WaitForExit();
+            return process.ExitCode == 0;
         }
         public readonly void RunAsync()
         {
@@ -77,8 +61,8 @@ public static class Shartilities
             }
 
             var command = CliWrap.Cli
-                .Wrap(this.Head())
-                .WithArguments(this.Args())
+                .Wrap(this.Head)
+                .WithArguments(this.Args)
                 .WithValidation(CliWrap.CommandResultValidation.None);
             var commandTask = command.ExecuteBufferedAsync();
 
