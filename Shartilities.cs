@@ -152,7 +152,7 @@ public static class Shartilities
     public static string ReadFile(string FilePath, int? ExitCode = null, bool LOG = false)
     {
         if (!File.Exists(FilePath))
-            Shartilities.Logln(Shartilities.LogType.ERROR, $"file {FilePath} doesn't exists", 1);
+            Logln(LogType.ERROR, $"file {FilePath} doesn't exists", 1);
         string ret;
         try
         {
@@ -160,21 +160,21 @@ public static class Shartilities
         }
         catch
         {
-            Shartilities.Logln(LogType.ERROR, $"could not write to file {FilePath}");
+            Logln(LogType.ERROR, $"could not write to file {FilePath}");
             if (ExitCode.HasValue)
                 Environment.Exit(ExitCode.Value);
             return "";
         }
         if (LOG)
-            Shartilities.Logln(LogType.INFO, $"file {FilePath} was read successfully");
+            Logln(LogType.INFO, $"file {FilePath} was read successfully");
         return ret;
     }
-    public static bool WriteFile(string FilePath, string contents, int? ExitCode = null)
+    public static bool WriteFile(string FilePath, string contents, bool verbose = true, int? ExitCode = null)
     {
         string? DirPath = Path.GetDirectoryName(FilePath);
         if (DirPath == null)
         {
-            Shartilities.Logln(Shartilities.LogType.ERROR, $"invalid path: {FilePath}", 1);
+            if (verbose) Logln(LogType.ERROR, $"invalid path: {FilePath}", 1);
             return false;
         }
         if (!Directory.Exists(DirPath))
@@ -185,12 +185,12 @@ public static class Shartilities
         }
         catch
         {
-            Shartilities.Logln(LogType.ERROR, $"could not write to file {FilePath}");
+            if (verbose) Logln(LogType.ERROR, $"could not write to file {FilePath}");
             if (ExitCode.HasValue)
                 Environment.Exit(ExitCode.Value);
             return false;
         }
-        Shartilities.Logln(LogType.INFO, $"file {FilePath} was written successfully");
+        if (verbose) Logln(LogType.INFO, $"file {FilePath} was written successfully");
         return true;
     }
     public static List<string> SplitAndRemoveWhite(string src)
